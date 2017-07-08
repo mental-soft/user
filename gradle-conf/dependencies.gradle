@@ -1,0 +1,15 @@
+ext {
+    postgresqlVersion = '42.1.1'
+}
+
+dependencies {
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
+
+    compile group: 'org.liquibase', name: 'liquibase-core'
+
+    compile group: 'org.postgresql', name: 'postgresql', version: "$postgresqlVersion"
+    compile group: 'com.zaxxer', name: 'HikariCP'
+
+    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+}

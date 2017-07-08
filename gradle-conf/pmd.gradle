@@ -1,0 +1,19 @@
+apply plugin: 'pmd'
+
+pmd {
+    ignoreFailures = ignoreFailuresInCheck.toBoolean()
+    sourceSets = [sourceSets.main]
+    ruleSets = [
+            'java-basic',
+            'java-braces',
+            'java-clone',
+            'java-codesize',
+            'java-imports',
+            'java-junit',
+            'java-logging-java',
+            'java-migrating',
+            'java-sunsecure',
+            'java-unnecessary',
+            'java-unusedcode'
+    ]
+}

@@ -1,0 +1,38 @@
+repositories {
+    mavenCentral()
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.0'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+//Buildden önce temizle
+compileJava { dependsOn += ['clean'] }
+
+//Sadece gradle(w) komutu çalıştırıldığında çalışacak tasklar
+defaultTasks 'clean', 'check', 'build', 'javadoc'
+
+idea {
+    module {
+        //Uygulamayı ideada açarsanız
+        //open source kütüphanelerin dokümanını ve kaynak kodunu da indirir.
+        downloadSources = true
+        downloadJavadoc = true
+    }
+}
+
+bootRun {
+    //bootRun ile çalıştırıldığında environment set edebilmek için gerekli.
+    systemProperties = System.properties
+}
+
+test {
+    testLogging {
+        // Show that tests are run in the command-line output
+        events 'STARTED', 'PASSED', 'FAILED'
+    }
+    ignoreFailures ignoreFailuresInCheck.toBoolean()
+}
