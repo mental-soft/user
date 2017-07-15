@@ -4,7 +4,7 @@
 - Postgresql
 
 ### Run postgresql with docker
-docker run --name postgresql -itd -p 5432:5432 --restart always --e 'DB_NAME=user-dev,user-qa' --e 'DB_USER=dbuser' --e 'DB_PASS=12345' sameersbn/postgresql:9.6-2
+docker run --name postgresql -itd -p 5432:5432 --restart always -e 'DB_NAME=user-dev,user-qa' -e 'DB_USER=dbuser' -e 'DB_PASS=12345' sameersbn/postgresql:9.6-2
 
 >Note: Locale makinenizi hem developer hem de qa makinesi olarak düşünebilirsiniz.
 Qa makineniz varsa user-qa databasei oluşturmanıza gerek yok.
