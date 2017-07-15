@@ -1,4 +1,4 @@
-package com.teammental.authentication;
+package com.teammental.user;
 
 import static org.junit.Assert.assertEquals;
 
