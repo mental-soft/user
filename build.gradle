@@ -15,12 +15,6 @@ jar {
     baseName = 'user'
 }
 
-apply from: "$rootDir/gradle-conf/global-config.gradle"
+apply from: "https://raw.githubusercontent.com/mental-soft/gradle-config/master/global-config.gradle"
 
-apply from: "$rootDir/gradle-conf/dependencies.gradle"
-
-apply from: "$rootDir/gradle-conf/checkstyle.gradle"
-apply from: "$rootDir/gradle-conf/jacoco.gradle"
-apply from: "$rootDir/gradle-conf/pmd.gradle"
-apply from: "$rootDir/gradle-conf/findbugs.gradle"
-apply from: "$rootDir/gradle-conf/jdepend.gradle"
+apply from: "https://raw.githubusercontent.com/mental-soft/gradle-config/master/dependencies.gradle"
