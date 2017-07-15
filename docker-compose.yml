@@ -1,0 +1,22 @@
+version: "3.3"
+services:
+  web:
+    image: mental/user
+    build: .
+    ports:
+      - "8080:8080"
+    links:
+      - cont_postgresql
+    depends_on:
+      - cont_postgresql
+    environment:
+      SPRING_PROFILES_ACTIVE: default
+  cont_postgresql:
+    image: sameersbn/postgresql
+    ports:
+      - "5432:5432"
+    environment:
+      DB_NAME: user-dev,user-qa
+      DB_USER: dbuser
+      DB_PASS: 12345
+
