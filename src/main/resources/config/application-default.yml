@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/user-dev
+    url: jdbc:postgresql://${connection:localhost}:5432/user-dev
     username: dbuser
     password: 12345
   thymeleaf:

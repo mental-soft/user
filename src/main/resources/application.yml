@@ -3,7 +3,7 @@ liquibase:
 
 server:
   port: 8080
-  contextPath: /authentication
+  contextPath: /user
 
 spring:
   datasource:
