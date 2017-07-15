@@ -4,7 +4,7 @@
 - Postgresql
 
 ### Run postgresql with docker
-docker run --name postgresql -itd -p 5432:5432 --restart always -e 'DB_NAME=user-dev,user-qa' -e 'DB_USER=dbuser' -e 'DB_PASS=12345' sameersbn/postgresql:9.6-2
+docker run --name cont_postgresql -itd -p 5432:5432 --restart always -e DB_NAME=user-dev,user-qa -e DB_USER=dbuser -e DB_PASS=12345 sameersbn/postgresql:9.6-2
 
 >Note: Locale makinenizi hem developer hem de qa makinesi olarak düşünebilirsiniz.
 Qa makineniz varsa user-qa databasei oluşturmanıza gerek yok.
@@ -44,3 +44,34 @@ Gradle build işlemi için
 Örneğin
 
 <code>java -jar build/libs/user.jar --spring.profiles.active=qa</code>
+
+# Docker
+
+## Projeyi docker komutundan çalıştırma
+>Docker run ile çalıştırırken dependent olan containerları ayağa kaldırmalısınız.
+
+<code>docker run -it --name cont_user -p 8080:8080 --link cont_postgresql mental/user</code>
+
+# Docker compose dan çalıştırma
+> Compose ile çalıştırırken dependent olan başka containerlar var ise durdurunuz. Yoksa port çakışması olur.
+
+<code>docker-compose up</code>
+
+
+## Up yaparken build etmek için
+<code>docker-compose up --build</code>
+
+
+## Build docker
+> Imagei değiştirmek isterseniz.
+
+Projeyi gradle ile build ettikten sonra docker 
+imageini oluşturmak için docker build etmelisiniz.
+
+<code>docker build -t mental/user .</code>
+
+
+# Browse
+
+[http://localhost:8080/user](http://localhost:8080/user)
+
