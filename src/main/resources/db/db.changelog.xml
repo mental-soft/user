@@ -5,15 +5,8 @@
         xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
     http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
-    <!--Database scriptleri-->
 
-    <changeSet id="1" author="huseyin.guler">
-        <comment>Test tablosu</comment>
-        <createTable tableName="TUTORIAL">
-            <column name="COLUMN1" type="NUMBER" autoIncrement="true">
-                <constraints primaryKey="true"/>
-            </column>
-        </createTable>
-    </changeSet>
+
+    <include file="db/table_user.xml"/>
 
 </databaseChangeLog>

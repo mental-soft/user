@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+
+    <changeSet id="1" author="huseyin.guler">
+        <comment>todo
+        </comment>
+        <createTable tableName="USER">
+            <column name="ID" type="NUMBER">
+                <constraints primaryKey="true" primaryKeyName="PK_USER_ID"/>
+            </column>
+            <column name="USER_NAME" type="VARCHAR(50)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="NAME" type="VARCHAR(150)"/>
+            <column name="SURNAME" type="VARCHAR(150)"/>
+            <column name="PHONE" type="VARCHAR(50)"/>
+            <column name="MOBILE_PHONE" type="VARCHAR(50)"/>
+            <column name="EMAIL" type="VARCHAR(250)"/>
+            <column name="IS_ACTIVE" type="BOOLEAN"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="huseyin.guler" context="test">
+        <comment>Test datası eklendi</comment>
+        <insert tableName="USER">
+            <column name="ID" valueNumeric="1"/>
+            <column name="USER_NAME" value="user1"/>
+            <column name="NAME" value="user1_name"/>
+            <column name="SURNAME" value="user1_surname"/>
+            <column name="PHONE" value="user1_phone"/>
+            <column name="MOBILE_PHONE" value="user1_mobile_phone"/>
+            <column name="EMAIL" value="user1_email"/>
+            <column name="IS_ACTIVE" valueBoolean="true"/>
+        </insert>
+        <insert tableName="USER">
+            <column name="ID" valueNumeric="2"/>
+            <column name="USER_NAME" value="user2"/>
+            <column name="NAME" value="user2_name"/>
+            <column name="SURNAME" value="user2_surname"/>
+            <column name="PHONE" value="user2_phone"/>
+            <column name="MOBILE_PHONE" value="user2_mobile_phone"/>
+            <column name="EMAIL" value="user2_email"/>
+            <column name="IS_ACTIVE" valueBoolean="true"/>
+        </insert>
+        <insert tableName="USER">
+            <column name="ID" valueNumeric="3"/>
+            <column name="USER_NAME" value="user3"/>
+            <column name="NAME" value="user3_name"/>
+            <column name="SURNAME" value="user3_surname"/>
+            <column name="PHONE" value="user3_phone"/>
+            <column name="MOBILE_PHONE" value="user3_mobile_phone"/>
+            <column name="EMAIL" value="user3_email"/>
+            <column name="IS_ACTIVE" valueBoolean="true"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
