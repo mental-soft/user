@@ -6,6 +6,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 /**
  * Created by hcguler on 7/8/2017.
  */
+
+/**
+ * Deneme için Hello controller.
+ */
 @Controller
 public class HelloController {
 
