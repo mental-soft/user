@@ -7,17 +7,11 @@
     http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
     <changeSet id="1" author="huseyin.guler">
-        <comment>todo
+        <comment> User tablosudur.
         </comment>
-        <createSequence cycle="false"
-                        incrementBy="1"
-                        maxValue="1000"
-                        minValue="50"
-                        sequenceName="user_id_seq"
-                        startValue="50"/>
         <createTable tableName="MENTAL_USER">
-            <column name="ID" type="NUMBER" defaultValueSequenceNext="user_id_seq">
-                <constraints primaryKey="true" primaryKeyName="PK_USER_ID" />
+            <column name="ID" type="SERIAL" startWith="100" incrementBy="10">
+                <constraints primaryKey="true"/>
             </column>
             <column name="USER_NAME" type="VARCHAR(50)">
                 <constraints unique="true" nullable="false"/>
@@ -34,7 +28,7 @@
     <changeSet id="2" author="huseyin.guler" context="test">
         <comment>Test datası eklendi</comment>
         <insert tableName="MENTAL_USER">
-            <column name="ID" valueNumeric="1"/>
+            <!--<column name="ID" valueNumeric="1"/>-->
             <column name="USER_NAME" value="user1"/>
             <column name="NAME" value="user1_name"/>
             <column name="SURNAME" value="user1_surname"/>
@@ -44,7 +38,7 @@
             <column name="IS_ACTIVE" valueBoolean="true"/>
         </insert>
         <insert tableName="MENTAL_USER">
-            <column name="ID" valueNumeric="2"/>
+            <!--<column name="ID" valueNumeric="2"/>-->
             <column name="USER_NAME" value="user2"/>
             <column name="NAME" value="user2_name"/>
             <column name="SURNAME" value="user2_surname"/>
@@ -54,7 +48,7 @@
             <column name="IS_ACTIVE" valueBoolean="true"/>
         </insert>
         <insert tableName="MENTAL_USER">
-            <column name="ID" valueNumeric="3"/>
+            <!--<column name="ID" valueNumeric="3"/>-->
             <column name="USER_NAME" value="user3"/>
             <column name="NAME" value="user3_name"/>
             <column name="SURNAME" value="user3_surname"/>
