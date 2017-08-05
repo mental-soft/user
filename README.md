@@ -50,7 +50,7 @@ Gradle build işlemi için
 ## Projeyi docker komutundan çalıştırma
 >Docker run ile çalıştırırken dependent olan containerları ayağa kaldırmalısınız.
 
-<code>docker run -it --name cont_user -p 8080:8080 --link cont_postgresql mental/user</code>
+<code>docker run -it --name cont_user -p 8080:10050 --link cont_postgresql mental/user</code>
 
 # Docker compose dan çalıştırma
 > Compose ile çalıştırırken dependent olan başka containerlar var ise durdurunuz. Yoksa port çakışması olur.
@@ -73,5 +73,5 @@ imageini oluşturmak için docker build etmelisiniz.
 
 # Browse
 
-[http://localhost:8080/user](http://localhost:8080/user)
+[http://localhost:10050/user](http://localhost:10050/user)
 
