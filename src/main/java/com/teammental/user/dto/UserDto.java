@@ -1,58 +1,26 @@
-package com.teammental.user.entity;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.constraints.Size;
+package com.teammental.user.dto;
 
 /**
- * User tablosu mappingi.
- * Created by hcguler on 7/22/2017.
+ * Bu sınıf user verilerinin arayüze aktarılması için kullanılacaktır.
+ * User bilgisine ait ad, soyad, kullanıcı adı, telefon, cep telefonu, email ve aktiflik durumu bilgilerini içerir.
+ * Created by hcguler on 8/5/2017.
  */
-@Entity
-@Table(name = "MENTAL_USER")
-public class User {
-  public User() {
-  }
-  @Id
-  @Column(name = "ID", columnDefinition = "NUMERIC")
-  private int id;
+public class UserDto {
 
-  @Size(max = 50)
-  @Column(name = "USER_NAME", columnDefinition = "VARCHAR")
+  private Integer id;
   private String userName;
-
-  @Size(max = 150)
-  @Column(name = "NAME", columnDefinition = "VARCHAR")
   private String name;
-
-  @Size(max = 150)
-  @Column(name = "SURNAME", columnDefinition = "VARCHAR")
   private String surName;
-
-  @Size(max = 50)
-  @Column(name = "PHONE", columnDefinition = "VARCHAR")
   private String phone;
-
-  @Size(max = 50)
-  @Column(name = "MOBILE_PHONE", columnDefinition = "VARCHAR")
   private String mobilePhone;
-
-  @Size(max = 250)
-  @Column(name = "EMAIL", columnDefinition = "VARCHAR")
   private String email;
-
-  @Column(name = "IS_ACTIVE", columnDefinition = "BOOLEAN")
   private boolean isActive;
 
-  public int getId() {
+  public Integer getId() {
     return id;
   }
 
-  public void setId(int id) {
+  public void setId(Integer id) {
     this.id = id;
   }
 

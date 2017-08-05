@@ -28,7 +28,6 @@
     <changeSet id="2" author="huseyin.guler" context="test">
         <comment>Test datası eklendi</comment>
         <insert tableName="MENTAL_USER">
-            <!--<column name="ID" valueNumeric="1"/>-->
             <column name="USER_NAME" value="user1"/>
             <column name="NAME" value="user1_name"/>
             <column name="SURNAME" value="user1_surname"/>
@@ -38,7 +37,6 @@
             <column name="IS_ACTIVE" valueBoolean="true"/>
         </insert>
         <insert tableName="MENTAL_USER">
-            <!--<column name="ID" valueNumeric="2"/>-->
             <column name="USER_NAME" value="user2"/>
             <column name="NAME" value="user2_name"/>
             <column name="SURNAME" value="user2_surname"/>
