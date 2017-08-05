@@ -73,5 +73,5 @@ imageini oluşturmak için docker build etmelisiniz.
 
 # Browse
 
-[http://localhost:10050/user](http://localhost:10050/user)
+[https://localhost:10050/user](https://localhost:10050/user)
 

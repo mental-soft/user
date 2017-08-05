@@ -4,6 +4,10 @@ liquibase:
 server:
   port: 10050
   contextPath: /user
+  ssl:
+    enabled: true
+    key-store: classpath:keystore/thekeystore.jks
+    key-store-password: changeit
 
 spring:
   datasource:
