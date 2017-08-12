@@ -1,6 +1,5 @@
 package com.teammental.user.entity;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,8 +8,6 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
-import org.hibernate.annotations.Type;
-import org.hibernate.type.NumericBooleanType;
 
 /**
  * User tablosu mappingi.
@@ -19,12 +16,10 @@ import org.hibernate.type.NumericBooleanType;
 @Entity
 @Table(name = "MENTAL_USER")
 public class User {
-  public User() {
-  }
   @Id
-  @SequenceGenerator(name="pk_sequence",sequenceName="user_id_seq", allocationSize=1)
-  @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="pk_sequence")
-  @Column(name = "ID", columnDefinition = "NUMERIC", unique=true, nullable=false)
+  @SequenceGenerator(name = "pk_sequence", sequenceName = "user_id_seq", allocationSize = 1)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pk_sequence")
+  @Column(name = "ID", columnDefinition = "NUMERIC", unique = true, nullable = false)
   private int id;
 
   @Size(max = 50)
@@ -52,7 +47,7 @@ public class User {
   private String email;
 
   @Column(name = "IS_ACTIVE", columnDefinition = "BOOLEAN")
-  private boolean isActive;
+  private boolean active;
 
   public int getId() {
     return id;
@@ -111,10 +106,10 @@ public class User {
   }
 
   public boolean isActive() {
-    return isActive;
+    return active;
   }
 
   public void setActive(boolean active) {
-    isActive = active;
+    this.active = active;
   }
 }

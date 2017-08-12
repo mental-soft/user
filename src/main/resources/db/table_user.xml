@@ -11,7 +11,6 @@
         </comment>
         <createSequence cycle="false"
                         incrementBy="1"
-                        maxValue="1000"
                         minValue="50"
                         sequenceName="user_id_seq"
                         startValue="50"/>
@@ -40,7 +39,7 @@
             <column name="PHONE" value="user1_phone"/>
             <column name="MOBILE_PHONE" value="user1_mobile_phone"/>
             <column name="EMAIL" value="user1_email"/>
-            <column name="IS_ACTIVE" valueBoolean="true"/>
+            <column name="IS_ACTIVE" valueBoolean="TRUE"/>
         </insert>
         <insert tableName="MENTAL_USER">
             <column name="USER_NAME" value="user2"/>
@@ -49,17 +48,16 @@
             <column name="PHONE" value="user2_phone"/>
             <column name="MOBILE_PHONE" value="user2_mobile_phone"/>
             <column name="EMAIL" value="user2_email"/>
-            <column name="IS_ACTIVE" valueBoolean="true"/>
+            <column name="IS_ACTIVE" valueBoolean="TRUE"/>
         </insert>
         <insert tableName="MENTAL_USER">
-            <!--<column name="ID" valueNumeric="3"/>-->
             <column name="USER_NAME" value="user3"/>
             <column name="NAME" value="user3_name"/>
             <column name="SURNAME" value="user3_surname"/>
             <column name="PHONE" value="user3_phone"/>
             <column name="MOBILE_PHONE" value="user3_mobile_phone"/>
             <column name="EMAIL" value="user3_email"/>
-            <column name="IS_ACTIVE" valueBoolean="true"/>
+            <column name="IS_ACTIVE" valueBoolean="FALSE"/>
         </insert>
     </changeSet>
 

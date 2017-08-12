@@ -14,7 +14,7 @@ public class UserDto {
   private String phone;
   private String mobilePhone;
   private String email;
-  private boolean isActive;
+  private boolean active;
 
   public Integer getId() {
     return id;
@@ -73,10 +73,10 @@ public class UserDto {
   }
 
   public boolean isActive() {
-    return isActive;
+    return active;
   }
 
   public void setActive(boolean active) {
-    isActive = active;
+    this.active = active;
   }
 }
