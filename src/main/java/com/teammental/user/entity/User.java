@@ -1,12 +1,16 @@
 package com.teammental.user.entity;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
+import org.hibernate.annotations.Type;
+import org.hibernate.type.NumericBooleanType;
 
 /**
  * User tablosu mappingi.
@@ -18,7 +22,9 @@ public class User {
   public User() {
   }
   @Id
-  @Column(name = "ID", columnDefinition = "NUMERIC")
+  @SequenceGenerator(name="pk_sequence",sequenceName="user_id_seq", allocationSize=1)
+  @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="pk_sequence")
+  @Column(name = "ID", columnDefinition = "NUMERIC", unique=true, nullable=false)
   private int id;
 
   @Size(max = 50)
