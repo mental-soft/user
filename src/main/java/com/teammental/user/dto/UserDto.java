@@ -2,7 +2,8 @@ package com.teammental.user.dto;
 
 /**
  * Bu sınıf user verilerinin arayüze aktarılması için kullanılacaktır.
- * User bilgisine ait ad, soyad, kullanıcı adı, telefon, cep telefonu, email ve aktiflik durumu bilgilerini içerir.
+ * User bilgisine ait ad, soyad, kullanıcı adı, telefon, cep telefonu, email ve aktiflik durumu
+ * bilgilerini içerir.
  * Created by hcguler on 8/5/2017.
  */
 public class UserDto {

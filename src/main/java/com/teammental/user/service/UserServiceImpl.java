@@ -1,7 +1,6 @@
 package com.teammental.user.service;
 
 import com.teammental.memapper.MeMapper;
-import com.teammental.user.controller.UserController;
 import com.teammental.user.dto.UserDto;
 import com.teammental.user.entity.User;
 import com.teammental.user.jpa.UserRepostory;
@@ -52,7 +51,7 @@ public class UserServiceImpl implements UserService {
       Optional<UserDto> optional = MeMapper.getMapperFrom(one).mapTo(UserDto.class);
       return optional.get();
     } catch (Exception e) {
-      LOGGER.error("",e);
+      LOGGER.error("", e);
       return null;
     }
   }
@@ -113,22 +112,27 @@ public class UserServiceImpl implements UserService {
   /**
    * Kullanıcı adı, mail ve cep telefonu bilgileri tekil olması gerekir.
    * Bu metod ile aynı kayıtlar oluşmasının kontrolünü  yapıyoruz.
+   *
    * @param dto Bu objede yer alan username, mail, cep telefonu alanları dolu gelir.
-   * @return 0 Benzer kayıt yok
-   *         1 email aynı kayıt mevcut
-   *         2 kullanıcı adı aynı kayıt mevcut
+   * @return 0 Benzer kayıt yok, 1 email aynı kayıt mevcut, kullanıcı adı aynı kayıt mevcut,
    *         3 cep telefonu  aynı kayıt mevcut
    * @throws Exception iş mantığı kapsamında hataları döner.
    */
   @Override
   public int isExistUser(UserDto dto) throws Exception {
     int existChecker = 0;
-    if (!StringUtils.isEmpty(dto.getUserName()) && !CollectionUtils.isEmpty(userRepostory.findByEmail(dto.getEmail())))
+    if (!StringUtils.isEmpty(dto.getUserName())
+        && !CollectionUtils.isEmpty(userRepostory.findByEmail(dto.getEmail()))) {
       existChecker = 1;
-    if (!StringUtils.isEmpty(dto.getEmail()) && !CollectionUtils.isEmpty(userRepostory.findByUserName(dto.getUserName())))
+    }
+    if (!StringUtils.isEmpty(dto.getEmail())
+        && !CollectionUtils.isEmpty(userRepostory.findByUserName(dto.getUserName()))) {
       existChecker = 2;
-    if (!StringUtils.isEmpty(dto.getMobilePhone()) && !CollectionUtils.isEmpty(userRepostory.findByMobilePhone(dto.getMobilePhone())))
+    }
+    if (!StringUtils.isEmpty(dto.getMobilePhone())
+        && !CollectionUtils.isEmpty(userRepostory.findByMobilePhone(dto.getMobilePhone()))) {
       existChecker = 3;
+    }
     return existChecker;
   }
 }

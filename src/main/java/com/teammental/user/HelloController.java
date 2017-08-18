@@ -17,7 +17,7 @@ public class HelloController {
    * index.xhtml sayfasını dönen metoddur.
    * @return sayfa adı geri döndürür
    */
-  @RequestMapping({"/","/index"})
+  @RequestMapping({"/", "/index"})
   public String getIndex() {
     return "index";
   }
