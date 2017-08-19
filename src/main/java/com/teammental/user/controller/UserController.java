@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserController {
   private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+  public static final String USERS_MAPPING = "/users";
   @Autowired
   private UserService userService;
 
@@ -33,7 +34,7 @@ public class UserController {
    *
    * @return Bütün kullanıcılar json olarak döner.
    */
-  @GetMapping(value = "/users", produces = "application/json")
+  @GetMapping(value = USERS_MAPPING, produces = "application/json")
   public ResponseEntity getAllUser() {
     try {
       List<UserDto> all = userService.getAll();
@@ -52,7 +53,7 @@ public class UserController {
    * Yeni bir kullanıcı eklemek için kullanılır.
    * Parametre olarak json olarak user bilgileri gönderilir.
    */
-  @PostMapping(value = "/users", produces = "application/json")
+  @PostMapping(value = USERS_MAPPING, produces = "application/json")
   public ResponseEntity createUser(@RequestBody UserDto userDto) throws Exception {
     try {
       if (StringUtils.isEmpty(userDto.getName()) || StringUtils.isEmpty(userDto.getSurName())) {
