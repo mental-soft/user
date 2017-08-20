@@ -27,7 +27,6 @@ public class ApplicationTest {
 
   /**
    * test metodudur.
-   * @throws Exception
    */
   @Test
   public void getIndex() throws Exception {
