@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
   private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
   public static final String USERS_MAPPING = "/users";
+  public static final String USER_DETAIL_MAPPING = "/users/{userId}";
   @Autowired
   private UserService userService;
 
@@ -91,11 +92,11 @@ public class UserController {
    * @return id bilgisine ait user bilgilerini döner.
    * @throws Exception iş mantığına bağlı hata döner.
    */
-  @GetMapping(value = "/users/{userId}", produces = "application/json")
+  @GetMapping(value = USER_DETAIL_MAPPING, produces = "application/json")
   public @ResponseBody ResponseEntity getUserById(@PathVariable Integer userId) throws Exception {
     try {
       UserDto userDto = userService.getById(userId);
-      if (userDto.getId() == null) {
+      if (userDto == null || userDto.getId() == null) {
         return ResponseEntity.badRequest().body("Herhangi bir kullanıcı bulunamadı.");
       }
       return ResponseEntity.ok().body(userDto);
@@ -112,7 +113,7 @@ public class UserController {
    * @return Güncellenen kullanıcı bilgisini döner.
    * @throws Exception iş mantığına bağlı hata döner.
    */
-  @PutMapping(value = "/users/{userId}", produces = "application/json",
+  @PutMapping(value = USER_DETAIL_MAPPING, produces = "application/json",
       headers = "application/json")
   public @ResponseBody ResponseEntity updateUser(@RequestBody UserDto userDto) throws Exception {
     try {

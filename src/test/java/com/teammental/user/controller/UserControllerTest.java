@@ -102,4 +102,34 @@ public class UserControllerTest {
     MvcResult result = mockMvc.perform(requestBuilder).andReturn();
     LOGGER.info(result.getResponse().getContentAsString());
   }
+
+  /**
+   * getbyId unit test.
+   * @throws Exception Hata dönüşüdür.
+   */
+  @Test
+  public void getUserById() throws Exception {
+    Mockito.when(userService.getById(1)).thenReturn(mockUserList.get(0));
+    RequestBuilder requestBuilder = MockMvcRequestBuilders
+        .get(UserController.USERS_MAPPING + "/1")
+        .accept(MediaType.APPLICATION_JSON);
+    MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+    LOGGER.info(result.getResponse().getContentAsString());
+    assertEquals(200, result.getResponse().getStatus());;
+  }
+
+  /**
+   * * getbyId olmayan kullanıcı çağrımı.
+   * @throws Exception Hata döndürür.
+   */
+  @Test
+  public void getUserByIdUnknown() throws Exception {
+    Mockito.when(userService.getById(1)).thenReturn(mockUserList.get(0));
+    RequestBuilder requestBuilder = MockMvcRequestBuilders
+        .get(UserController.USERS_MAPPING + "/2")
+        .accept(MediaType.APPLICATION_JSON);
+    MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+    LOGGER.info(result.getResponse().getContentAsString());
+    assertEquals(400, result.getResponse().getStatus());;
+  }
 }
