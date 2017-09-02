@@ -15,7 +15,7 @@ public interface UserService {
 
   void deleteById(int userId);
 
-  int saveOrUpdate(UserDto dto) throws Exception;
+  int saveOrUpdate(UserDto userDto) throws Exception;
 
   int activatedUser(int userId) throws Exception;
 

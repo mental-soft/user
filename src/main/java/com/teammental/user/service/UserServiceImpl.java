@@ -1,8 +1,10 @@
 package com.teammental.user.service;
 
 import com.teammental.memapper.MeMapper;
+import com.teammental.user.constants.UserConstants;
 import com.teammental.user.dto.UserDto;
 import com.teammental.user.entity.User;
+import com.teammental.user.exception.UserException;
 import com.teammental.user.jpa.UserRepostory;
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +36,9 @@ public class UserServiceImpl implements UserService {
   public List<UserDto> getAll() {
     List<User> all = userRepostory.findAll();
     Optional<List<UserDto>> optional = MeMapper.getMapperFromList(all).mapToList(UserDto.class);
+    if (CollectionUtils.isEmpty(optional.get())) {
+      throw new UserException(0, "Herhangi bir kullanıcı bulunamadı.");
+    }
     return optional.get();
   }
 
@@ -49,6 +54,9 @@ public class UserServiceImpl implements UserService {
     try {
       User one = userRepostory.getOne(userId);
       Optional<UserDto> optional = MeMapper.getMapperFrom(one).mapTo(UserDto.class);
+      if (optional.get() == null || optional.get().getId() == null) {
+        throw new UserException(0, UserConstants.NOT_FOUND);
+      }
       return optional.get();
     } catch (Exception e) {
       LOGGER.error("", e);
@@ -69,15 +77,31 @@ public class UserServiceImpl implements UserService {
   /**
    * Yeni bir kullanıcı oluşturmak için kullanılan metoddur.
    *
-   * @param dto Yeni oluşturulacak olan kullanıcıya ait bilgileri içiren UserDto bilgisini alır.
+   * @param userDto Yeni oluşturulacak olan kullanıcıya ait bilgileri içiren UserDto bilgisini alır.
    * @return Kayıt edilen yeni user'a ait ID bilgisini geri döner.
    * @throws Exception iş mantığı kapsamında oluşan hataları döner.
    */
   @Override
-  public int saveOrUpdate(UserDto dto) throws Exception {
-    Optional<User> optional = MeMapper.getMapperFrom(dto).mapTo(User.class);
+  public int saveOrUpdate(UserDto userDto) throws Exception {
+    if (StringUtils.isEmpty(userDto.getName()) || StringUtils.isEmpty(userDto.getSurName())) {
+      throw new UserException(1, UserConstants.NAME_SURNAME_REQUIRED);
+    }
+    if (StringUtils.isEmpty(userDto.getEmail())
+        && StringUtils.isEmpty(userDto.getMobilePhone())) {
+      throw new UserException(2, UserConstants.MAIL_MOBILEPHONE_REQUIRED);
+    }
+    if (isExistUser(userDto) == 1) {
+      throw new UserException(3, UserConstants.SAME_MAIL);
+    }
+    if (isExistUser(userDto) == 2) {
+      throw new UserException(4, UserConstants.SAME_USERNAME);
+    }
+    if (isExistUser(userDto) == 3) {
+      throw new UserException(5, UserConstants.SAME_MOBILE_PHONE);
+    }
+    Optional<User> optional = MeMapper.getMapperFrom(userDto).mapTo(User.class);
     User user = userRepostory.save(optional.get());
-    return (int) user.getId();
+    return user.getId();
   }
 
   /**
@@ -122,17 +146,22 @@ public class UserServiceImpl implements UserService {
   public int isExistUser(UserDto dto) throws Exception {
     int existChecker = 0;
     if (!StringUtils.isEmpty(dto.getUserName())
-        && !CollectionUtils.isEmpty(userRepostory.findByEmail(dto.getEmail()))) {
+        && !mukerrerKontrolu(userRepostory.findByEmail(dto.getUserName()), dto)) {
       existChecker = 1;
     }
     if (!StringUtils.isEmpty(dto.getEmail())
-        && !CollectionUtils.isEmpty(userRepostory.findByUserName(dto.getUserName()))) {
+        && !mukerrerKontrolu(userRepostory.findByEmail(dto.getEmail()), dto)) {
       existChecker = 2;
     }
     if (!StringUtils.isEmpty(dto.getMobilePhone())
-        && !CollectionUtils.isEmpty(userRepostory.findByMobilePhone(dto.getMobilePhone()))) {
+        && !mukerrerKontrolu(userRepostory.findByMobilePhone(dto.getMobilePhone()), dto)) {
       existChecker = 3;
     }
     return existChecker;
+  }
+
+  private boolean mukerrerKontrolu(List<User> liste, UserDto userDto) {
+    return CollectionUtils.isEmpty(liste)
+        || liste.size() == 1 && liste.get(0).getId() == userDto.getId();
   }
 }

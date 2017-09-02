@@ -16,6 +16,7 @@ public class Application extends WebMvcConfigurerAdapter {
 
   /**
    * main metodur.
+   *
    * @param args standart parametre
    */
   public static void main(String[] args) {
