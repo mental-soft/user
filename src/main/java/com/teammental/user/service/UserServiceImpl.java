@@ -114,6 +114,9 @@ public class UserServiceImpl implements UserService {
   @Override
   public int activatedUser(int userId) throws Exception {
     UserDto userDto = getById(userId);
+    if (userDto.getId() == null) {
+      throw new UserException(0, "Herhangi bir kullanıcı bulunamadı.");
+    }
     userDto.setActive(true);
     return saveOrUpdate(userDto);
   }
@@ -128,6 +131,9 @@ public class UserServiceImpl implements UserService {
   @Override
   public int inActivatedUser(int userId) throws Exception {
     UserDto userDto = getById(userId);
+    if (userDto.getId() == null) {
+      throw new UserException(0, "Herhangi bir kullanıcı bulunamadı.");
+    }
     userDto.setActive(false);
     return saveOrUpdate(userDto);
   }

@@ -225,7 +225,6 @@ public class UserControllerTest {
     MvcResult result = mockMvc.perform(requestBuilder).andReturn();
     LOGGER.info(result.getResponse().getContentAsString());
     assertEquals(409, result.getResponse().getStatus());
-    ;
   }
 
   /**
@@ -241,7 +240,36 @@ public class UserControllerTest {
     MvcResult result = mockMvc.perform(requestBuilder).andReturn();
     LOGGER.info(result.getResponse().getContentAsString());
     assertEquals(409, result.getResponse().getStatus());
-    ;
+  }
+
+  /**
+   * Kullanıcı bilgilerinin aktifleştirme testi.
+   */
+  @Test
+  public void activeUserdTest() throws Exception {
+    Mockito.when(userService.activatedUser(1)).thenReturn(1);
+    RequestBuilder requestBuilder = MockMvcRequestBuilders
+        .put(UserController.USERS_MAPPING + "/1/activate")
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON);
+    MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+    LOGGER.info(result.getResponse().getContentAsString());
+    assertEquals(200, result.getResponse().getStatus());
+  }
+
+  /**
+   * Kullanıcı bilgilerinin pasifleştirme testi.
+   */
+  @Test
+  public void inActiveUserdTest() throws Exception {
+    Mockito.when(userService.inActivatedUser(1)).thenReturn(1);
+    RequestBuilder requestBuilder = MockMvcRequestBuilders
+        .put(UserController.USERS_MAPPING + "/1/pacify")
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON);
+    MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+    LOGGER.info(result.getResponse().getContentAsString());
+    assertEquals(200, result.getResponse().getStatus());
   }
 
   /**

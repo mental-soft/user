@@ -98,12 +98,17 @@ public class UserController {
    * @throws Exception iş mantığına bağlı hata döner.
    */
 
-  @PutMapping(value = USER_DETAIL_MAPPING, produces = "application/json",
-      headers = "application/json")
+  @PutMapping(value = USER_DETAIL_MAPPING, produces = "application/json")
   public @ResponseBody ResponseEntity updateUser(@RequestBody UserDto userDto) throws Exception {
     try {
       userService.saveOrUpdate(userDto);
-      return ResponseEntity.ok().body("");
+      return ResponseEntity.ok().body(userDto.getId());
+    } catch (UserException e) {
+      LOGGER.error("", e);
+      if (e.getCode() > 2 && e.getCode() < 6) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getLabel());
+      }
+      return ResponseEntity.badRequest().body(e.getLabel());
     } catch (Exception e) {
       LOGGER.error("", e);
       return ResponseEntity.badRequest().body("Hata oluştu.");
@@ -119,10 +124,6 @@ public class UserController {
   @PutMapping(value = "/users/{userId}/activate", produces = "application/json")
   public @ResponseBody ResponseEntity activateUser(@PathVariable Integer userId) throws Exception {
     try {
-      UserDto userDto = userService.getById(userId);
-      if (userDto.getId() == null) {
-        return ResponseEntity.badRequest().body("Herhangi bir kullanıcı bulunamadı.");
-      }
       userService.activatedUser(userId);
       return ResponseEntity.ok().body("");
     } catch (Exception e) {
@@ -140,10 +141,6 @@ public class UserController {
   @PutMapping(value = "/users/{userId}/pacify", produces = "application/json")
   public @ResponseBody ResponseEntity pacifyUser(@PathVariable Integer userId) throws Exception {
     try {
-      UserDto userDto = userService.getById(userId);
-      if (userDto.getId() == null) {
-        return ResponseEntity.badRequest().body("Herhangi bir kullanıcı bulunamadı.");
-      }
       userService.inActivatedUser(userId);
       return ResponseEntity.ok().body("");
     } catch (Exception e) {
