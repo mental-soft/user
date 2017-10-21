@@ -11,16 +11,16 @@ public interface UserService {
 
   List<UserDto> getAll();
 
-  UserDto getById(int userId) throws Exception;
+  UserDto getById(int userId);
 
   void deleteById(int userId);
 
-  int saveOrUpdate(UserDto userDto) throws Exception;
+  int saveOrUpdate(UserDto userDto);
 
-  int activatedUser(int userId) throws Exception;
+  int activatedUser(int userId);
 
-  int inActivatedUser(int userId) throws Exception;
+  int inActivatedUser(int userId);
 
-  int isExistUser(UserDto dto) throws Exception;
+  int isExistUser(UserDto dto);
 
 }

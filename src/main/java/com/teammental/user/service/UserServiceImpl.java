@@ -47,20 +47,19 @@ public class UserServiceImpl implements UserService {
    *
    * @param userId kullanıcının unique id bilgisidir.
    * @return ID bilgisi iletilen kullanıcı bilgilerini döner.
-   * @throws Exception iş mantığı kapsamında oluşan hataları döner.
    */
   @Override
-  public UserDto getById(int userId) throws Exception {
+  public UserDto getById(int userId) {
     try {
       User one = userRepostory.getOne(userId);
       Optional<UserDto> optional = MeMapper.getMapperFrom(one).mapTo(UserDto.class);
-      if (optional.get() == null || optional.get().getId() == null) {
+      if (!optional.isPresent()) {
         throw new UserException(0, UserConstants.NOT_FOUND);
       }
       return optional.get();
     } catch (Exception e) {
-      LOGGER.error("", e);
-      return null;
+      LOGGER.error("id: " + userId + " olan kayıt çekilirken hata oluştu.", e);
+      throw e;
     }
   }
 
@@ -79,10 +78,9 @@ public class UserServiceImpl implements UserService {
    *
    * @param userDto Yeni oluşturulacak olan kullanıcıya ait bilgileri içiren UserDto bilgisini alır.
    * @return Kayıt edilen yeni user'a ait ID bilgisini geri döner.
-   * @throws Exception iş mantığı kapsamında oluşan hataları döner.
    */
   @Override
-  public int saveOrUpdate(UserDto userDto) throws Exception {
+  public int saveOrUpdate(UserDto userDto) {
     if (StringUtils.isEmpty(userDto.getName()) || StringUtils.isEmpty(userDto.getSurName())) {
       throw new UserException(1, UserConstants.NAME_SURNAME_REQUIRED);
     }
@@ -109,10 +107,9 @@ public class UserServiceImpl implements UserService {
    *
    * @param userId Aktif edilecek user bilgisine ait ID bilgisidir.
    * @return Aktif edilmiş user id bilgisini döner.
-   * @throws Exception iş mantığı kapsamında oluşan hataları döner.
    */
   @Override
-  public int activatedUser(int userId) throws Exception {
+  public int activatedUser(int userId) {
     UserDto userDto = getById(userId);
     if (userDto.getId() == null) {
       throw new UserException(0, "Herhangi bir kullanıcı bulunamadı.");
@@ -126,10 +123,9 @@ public class UserServiceImpl implements UserService {
    *
    * @param userId Pasif edilecek user bilgisine ait ID bilgisidir.
    * @return Pasif edilmiş user bilgisini döner.
-   * @throws Exception iş mantığı kapsamında oluşan hataları döner.
    */
   @Override
-  public int inActivatedUser(int userId) throws Exception {
+  public int inActivatedUser(int userId) {
     UserDto userDto = getById(userId);
     if (userDto.getId() == null) {
       throw new UserException(0, "Herhangi bir kullanıcı bulunamadı.");
@@ -149,10 +145,10 @@ public class UserServiceImpl implements UserService {
    * @throws Exception iş mantığı kapsamında hataları döner.
    */
   @Override
-  public int isExistUser(UserDto dto) throws Exception {
+  public int isExistUser(UserDto dto) {
     int existChecker = 0;
     if (!StringUtils.isEmpty(dto.getUserName())
-        && !mukerrerKontrolu(userRepostory.findByEmail(dto.getUserName()), dto)) {
+        && !mukerrerKontrolu(userRepostory.findByUserName(dto.getUserName()), dto)) {
       existChecker = 1;
     }
     if (!StringUtils.isEmpty(dto.getEmail())
