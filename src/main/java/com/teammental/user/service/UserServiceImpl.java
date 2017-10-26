@@ -64,16 +64,6 @@ public class UserServiceImpl implements UserService {
   }
 
   /**
-   * ID bilgisi ile gelinen user bilgisini silmek için kullanılan metoddur.
-   *
-   * @param userId Silinecek user bilgisine ait id bilgisidir.
-   */
-  @Override
-  public void deleteById(int userId) {
-    userRepostory.delete(userId);
-  }
-
-  /**
    * Yeni bir kullanıcı oluşturmak için kullanılan metoddur.
    *
    * @param userDto Yeni oluşturulacak olan kullanıcıya ait bilgileri içiren UserDto bilgisini alır.
@@ -144,8 +134,7 @@ public class UserServiceImpl implements UserService {
    *         3 cep telefonu  aynı kayıt mevcut
    * @throws Exception iş mantığı kapsamında hataları döner.
    */
-  @Override
-  public int isExistUser(UserDto dto) {
+  private int isExistUser(UserDto dto) {
     int existChecker = 0;
     if (!StringUtils.isEmpty(dto.getUserName())
         && !mukerrerKontrolu(userRepostory.findByUserName(dto.getUserName()), dto)) {

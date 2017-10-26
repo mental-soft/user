@@ -4,7 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 import com.teammental.memapper.MeMapper;
@@ -94,6 +96,48 @@ public class UserServiceTest {
     when(userRepostory.getOne(1))
         .thenReturn(null);
     userService.getById(1);
+  }
+
+  /*
+  * İd ile kullanıcı aktif etme hatalı test
+  */
+  @Test(expected = UserException.class)
+  public void activatedUserFailTest(){
+    when(userRepostory.getOne(1))
+        .thenReturn(null);
+    userService.activatedUser(1);
+  }
+  /*
+  * İd ile kullanıcı pasif etme hatalı test
+  */
+  @Test(expected = UserException.class)
+  public void inActivatedUserFailTest(){
+    when(userRepostory.getOne(1))
+        .thenReturn(null);
+    userService.inActivatedUser(1);
+  }
+
+  /*
+  * İd ile kullanıcı aktif etme hatalı test
+  */
+  @Test
+  public void activatedUserSuccessTest(){
+    User user = getUser(6, "asda", "asdad", "asdad", "asdad", "asdad", "asdad", true);
+    doReturn(user).when(userRepostory).getOne(any());
+    doReturn(user).when(userRepostory).save(any(User.class));
+    int i = userService.activatedUser(1);
+    assertEquals(i,6);
+  }
+  /*
+  * İd ile kullanıcı pasif etme hatalı test
+  */
+  @Test
+  public void inActivatedUserSuccessTest(){
+    User user = getUser(5, "asda", "asdad", "asdad", "asdad", "asdad", "asdad", true);
+    doReturn(user).when(userRepostory).getOne(any());
+    doReturn(user).when(userRepostory).save(any(User.class));
+    int i = userService.inActivatedUser(1);
+    assertEquals(i,5);
   }
 
   /**

@@ -13,14 +13,9 @@ public interface UserService {
 
   UserDto getById(int userId);
 
-  void deleteById(int userId);
-
   int saveOrUpdate(UserDto userDto);
 
   int activatedUser(int userId);
 
   int inActivatedUser(int userId);
-
-  int isExistUser(UserDto dto);
-
 }
