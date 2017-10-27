@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -76,7 +77,7 @@ public class UserControllerTest {
                 if (2 == argument.getId()) {
                   throw new Exception();
                 } else if (3 == argument.getId()) {
-                  throw new UserException(3, UserConstants.MAIL_MOBILEPHONE_REQUIRED);
+                  throw new UserException(HttpStatus.CONFLICT.value(), UserConstants.SAME_MAIL);
                 } else if (4 == argument.getId()) {
                   throw new UserException(2, UserConstants.MAIL_MOBILEPHONE_REQUIRED);
                 }
@@ -171,14 +172,13 @@ public class UserControllerTest {
    */
   @Test
   public void getUserByIdUnknown() throws Exception {
-    Mockito.when(userService.getById(1)).thenThrow(new UserException(0, UserConstants.NOT_FOUND));
+    Mockito.when(userService.getById(1)).thenThrow(new UserException(HttpStatus.BAD_REQUEST.value(), UserConstants.NOT_FOUND));
     RequestBuilder requestBuilder = MockMvcRequestBuilders
         .get(UserController.USERS_MAPPING + "/1")
         .accept(MediaType.APPLICATION_JSON);
     MvcResult result = mockMvc.perform(requestBuilder).andReturn();
     LOGGER.info(result.getResponse().getContentAsString());
     assertEquals(400, result.getResponse().getStatus());
-    ;
   }
 
   /**

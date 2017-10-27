@@ -11,6 +11,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -54,7 +55,7 @@ public class UserServiceImpl implements UserService {
       User one = userRepostory.getOne(userId);
       Optional<UserDto> optional = MeMapper.getMapperFrom(one).mapTo(UserDto.class);
       if (!optional.isPresent()) {
-        throw new UserException(0, UserConstants.NOT_FOUND);
+        throw new UserException(HttpStatus.BAD_REQUEST.value(), UserConstants.NOT_FOUND);
       }
       return optional.get();
     } catch (Exception e) {
@@ -72,20 +73,21 @@ public class UserServiceImpl implements UserService {
   @Override
   public int saveOrUpdate(UserDto userDto) {
     if (StringUtils.isEmpty(userDto.getName()) || StringUtils.isEmpty(userDto.getSurName())) {
-      throw new UserException(1, UserConstants.NAME_SURNAME_REQUIRED);
+      throw new UserException(HttpStatus.BAD_REQUEST.value(), UserConstants.NAME_SURNAME_REQUIRED);
     }
     if (StringUtils.isEmpty(userDto.getEmail())
         && StringUtils.isEmpty(userDto.getMobilePhone())) {
-      throw new UserException(2, UserConstants.MAIL_MOBILEPHONE_REQUIRED);
+      throw new UserException(HttpStatus.BAD_REQUEST.value(),
+          UserConstants.MAIL_MOBILEPHONE_REQUIRED);
     }
     if (isExistUser(userDto) == 1) {
-      throw new UserException(3, UserConstants.SAME_MAIL);
+      throw new UserException(HttpStatus.CONFLICT.value(), UserConstants.SAME_MAIL);
     }
     if (isExistUser(userDto) == 2) {
-      throw new UserException(4, UserConstants.SAME_USERNAME);
+      throw new UserException(HttpStatus.CONFLICT.value(), UserConstants.SAME_USERNAME);
     }
     if (isExistUser(userDto) == 3) {
-      throw new UserException(5, UserConstants.SAME_MOBILE_PHONE);
+      throw new UserException(HttpStatus.CONFLICT.value(), UserConstants.SAME_MOBILE_PHONE);
     }
     Optional<User> optional = MeMapper.getMapperFrom(userDto).mapTo(User.class);
     User user = userRepostory.save(optional.get());

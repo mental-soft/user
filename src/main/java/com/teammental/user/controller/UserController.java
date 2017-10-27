@@ -7,7 +7,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -59,10 +58,7 @@ public class UserController {
       return ResponseEntity.ok().body(userDto.getId());
     } catch (UserException e) {
       LOGGER.error("", e);
-      if (e.getCode() > 2 && e.getCode() < 6) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getLabel());
-      }
-      return ResponseEntity.badRequest().body(e.getLabel());
+      return ResponseEntity.status(e.getCode()).body(e.getLabel());
     } catch (Exception e) {
       LOGGER.error("", e);
       return ResponseEntity.badRequest().body("Hata oluştu.");
@@ -83,7 +79,7 @@ public class UserController {
       return ResponseEntity.ok().body(userDto);
     } catch (UserException e) {
       LOGGER.error("", e);
-      return ResponseEntity.badRequest().body(e.getLabel());
+      return ResponseEntity.status(e.getCode()).body(e.getLabel());
     } catch (Exception e) {
       LOGGER.error("", e);
       return ResponseEntity.badRequest().body("Hata oluştu.");
@@ -105,10 +101,7 @@ public class UserController {
       return ResponseEntity.ok().body(userDto.getId());
     } catch (UserException e) {
       LOGGER.error("", e);
-      if (e.getCode() > 2 && e.getCode() < 6) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getLabel());
-      }
-      return ResponseEntity.badRequest().body(e.getLabel());
+      return ResponseEntity.status(e.getCode()).body(e.getLabel());
     } catch (Exception e) {
       LOGGER.error("", e);
       return ResponseEntity.badRequest().body("Hata oluştu.");
