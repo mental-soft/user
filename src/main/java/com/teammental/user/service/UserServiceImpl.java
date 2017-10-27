@@ -76,9 +76,13 @@ public class UserServiceImpl implements UserService {
       throw new UserException(HttpStatus.BAD_REQUEST.value(), UserConstants.NAME_SURNAME_REQUIRED);
     }
     if (StringUtils.isEmpty(userDto.getEmail())
-        && StringUtils.isEmpty(userDto.getMobilePhone())) {
+        || StringUtils.isEmpty(userDto.getMobilePhone())) {
       throw new UserException(HttpStatus.BAD_REQUEST.value(),
           UserConstants.MAIL_MOBILEPHONE_REQUIRED);
+    }
+    if (StringUtils.isEmpty(userDto.getUserName())) {
+      throw new UserException(HttpStatus.BAD_REQUEST.value(),
+          UserConstants.USERNAME_REQUIRED);
     }
     if (isExistUser(userDto) == 1) {
       throw new UserException(HttpStatus.CONFLICT.value(), UserConstants.SAME_MAIL);

@@ -7,6 +7,7 @@ package com.teammental.user.constants;
 public class UserConstants {
   public static final String NOT_FOUND = "Herhangi bir kullanıcı bulunamadı.";
   public static final String NAME_SURNAME_REQUIRED = "Ad Soyad alanı doldurulması zorunludur.";
+  public static final String USERNAME_REQUIRED = "Kullanıcı adı alanı doldurulması zorunludur.";
   public static final String SAME_MOBILE_PHONE = "Bu cep telefonu ile bir "
       + "kullanıcı zaten var.";
   public static final String SAME_USERNAME = "Bu kullanıcı adı ile bir "
