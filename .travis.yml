@@ -1,7 +1,0 @@
-language: Java
-before_install:
- - chmod +x gradlew
-jobs:
-  include:
-    - stage: build
-      script: ./gradlew build
