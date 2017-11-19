@@ -1,29 +1,33 @@
 package com.teammental.user.dto;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import org.hibernate.validator.constraints.Email;
+
 /**
  * Bu sınıf user verilerinin arayüze aktarılması için kullanılacaktır.
  * User bilgisine ait ad, soyad, kullanıcı adı, telefon, cep telefonu, email ve aktiflik durumu
  * bilgilerini içerir.
  * Created by hcguler on 8/5/2017.
  */
-public class UserDto {
+public class UserDto extends BaseDto<Integer> {
 
-  private Integer id;
+  @NotNull
+  @Size(max = 200)
   private String userName;
+  @Size(max = 200)
   private String name;
+  @Size(max = 200)
   private String surName;
+  @Size(max = 100)
   private String phone;
+  @Size(max = 100)
   private String mobilePhone;
+  @NotNull
+  @Size(max = 400)
+  @Email
   private String email;
   private boolean active;
-
-  public Integer getId() {
-    return id;
-  }
-
-  public void setId(Integer id) {
-    this.id = id;
-  }
 
   public String getUserName() {
     return userName;

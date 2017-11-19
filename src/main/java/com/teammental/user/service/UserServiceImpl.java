@@ -1,16 +1,19 @@
 package com.teammental.user.service;
 
-import com.teammental.memapper.MeMapper;
+import com.teammental.meconfig.bll.service.BaseCrudServiceImpl;
+import com.teammental.meconfig.exception.entity.EntityInsertException;
+import com.teammental.meconfig.exception.entity.EntityNotFoundException;
+import com.teammental.meconfig.exception.entity.EntityUpdateException;
 import com.teammental.user.constants.UserConstants;
 import com.teammental.user.dto.UserDto;
 import com.teammental.user.entity.User;
 import com.teammental.user.exception.UserException;
 import com.teammental.user.jpa.UserRepostory;
 import java.util.List;
-import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,55 +26,100 @@ import org.springframework.util.StringUtils;
  */
 @Service
 @Transactional
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl
+    extends BaseCrudServiceImpl<UserDto, Integer>
+    implements UserService {
   private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
   @Autowired
   private UserRepostory userRepostory;
 
-  /**
-   * Bütün user bilgilerinin geri gönderildiği metoddur.
-   *
-   * @return UserDto tipindi arrayList döner.
-   */
   @Override
-  public List<UserDto> getAll() {
-    List<User> all = userRepostory.findAll();
-    Optional<List<UserDto>> optional = MeMapper.getMapperFromList(all).mapToList(UserDto.class);
-    if (CollectionUtils.isEmpty(optional.get())) {
-      throw new UserException(0, "Herhangi bir kullanıcı bulunamadı.");
-    }
-    return optional.get();
+  protected JpaRepository getRepository() {
+    return userRepostory;
+  }
+
+  @Override
+  protected Class<?> getDtoClass() {
+    return UserDto.class;
+  }
+
+  @Override
+  protected Class<?> getEntityClass() {
+    return User.class;
   }
 
   /**
-   * Bir user bilgisini user'a ait id alanından sorgulanarak getiren metoddur.
+   * Pasif olan bir user bilgisini aktif etmek için kullanılan metoddur.
    *
-   * @param userId kullanıcının unique id bilgisidir.
-   * @return ID bilgisi iletilen kullanıcı bilgilerini döner.
+   * @param userId Aktif edilecek user bilgisine ait ID bilgisidir.
+   * @return Aktif edilmiş user id bilgisini döner.
    */
   @Override
-  public UserDto getById(int userId) {
+  public int activatedUser(Integer userId) {
     try {
-      User one = userRepostory.getOne(userId);
-      Optional<UserDto> optional = MeMapper.getMapperFrom(one).mapTo(UserDto.class);
-      if (!optional.isPresent()) {
-        throw new UserException(HttpStatus.BAD_REQUEST.value(), UserConstants.NOT_FOUND);
-      }
-      return optional.get();
-    } catch (Exception e) {
-      LOGGER.error("id: " + userId + " olan kayıt çekilirken hata oluştu.", e);
-      throw e;
+      UserDto userDto = null;
+      userDto = findById(userId);
+      userDto.setActive(true);
+      return insert(userDto);
+    } catch (EntityNotFoundException e) {
+      LOGGER.error("Kayıt Bulunamadı.");
+      throw new UserException(0, UserConstants.NOT_FOUND);
+    } catch (EntityInsertException e) {
+      LOGGER.error("Kayıt Bulunamadı.");
+      throw new UserException(0, "Kayıt işlenirken hata oluştu.");
+    }
+  }
+
+  /**
+   * Aktif olan bir user bilgisinin pasif etmek için kullanılan metoddur.
+   *
+   * @param userId Pasif edilecek user bilgisine ait ID bilgisidir.
+   * @return Pasif edilmiş user bilgisini döner.
+   */
+  @Override
+  public int inActivatedUser(Integer userId) {
+    try {
+      UserDto userDto = null;
+      userDto = findById(userId);
+      userDto.setActive(false);
+      return insert(userDto);
+    } catch (EntityNotFoundException e) {
+      LOGGER.error("Kayıt Bulunamadı.");
+      throw new UserException(0, UserConstants.NOT_FOUND);
+    } catch (EntityInsertException e) {
+      LOGGER.error("Kayıt Bulunamadı.");
+      throw new UserException(0, "Kayıt işlenirken hata oluştu.");
     }
   }
 
   /**
    * Yeni bir kullanıcı oluşturmak için kullanılan metoddur.
    *
-   * @param userDto Yeni oluşturulacak olan kullanıcıya ait bilgileri içiren UserDto bilgisini alır.
+   * @param dto Yeni oluşturulacak olan kullanıcıya ait bilgileri içiren UserDto bilgisini alır.
    * @return Kayıt edilen yeni user'a ait ID bilgisini geri döner.
+   * @throws EntityInsertException Kayıt işlemi sırasında hata alınırsa döner.
    */
   @Override
-  public int saveOrUpdate(UserDto userDto) {
+  protected Integer doInsert(UserDto dto) throws EntityInsertException {
+    kaliteKontrol(dto);
+    return super.doInsert(dto);
+  }
+
+  /**
+   * Bir kullanıcı kaydı güncellenirken kullanılır.
+   *
+   * @param dto Güncellenecek olan veri.
+   * @return Güncellenen verinin güncellendikten sonraki son halini döner.
+   * @throws EntityNotFoundException Eğer güncellenecek veri bulunamaz ise atar.
+   * @throws EntityUpdateException   Eğer güncelleme sırasında sorun olursa atar.
+   */
+  @Override
+  protected UserDto doUpdate(UserDto dto) throws EntityNotFoundException, EntityUpdateException {
+    kaliteKontrol(dto);
+    return super.doUpdate(dto);
+  }
+
+  private void kaliteKontrol(UserDto userDto) {
     if (StringUtils.isEmpty(userDto.getName()) || StringUtils.isEmpty(userDto.getSurName())) {
       throw new UserException(HttpStatus.BAD_REQUEST.value(), UserConstants.NAME_SURNAME_REQUIRED);
     }
@@ -85,49 +133,14 @@ public class UserServiceImpl implements UserService {
           UserConstants.USERNAME_REQUIRED);
     }
     if (isExistUser(userDto) == 1) {
-      throw new UserException(HttpStatus.CONFLICT.value(), UserConstants.SAME_MAIL);
+      throw new UserException(HttpStatus.CONFLICT.value(), UserConstants.SAME_USERNAME);
     }
     if (isExistUser(userDto) == 2) {
-      throw new UserException(HttpStatus.CONFLICT.value(), UserConstants.SAME_USERNAME);
+      throw new UserException(HttpStatus.CONFLICT.value(), UserConstants.SAME_MAIL);
     }
     if (isExistUser(userDto) == 3) {
       throw new UserException(HttpStatus.CONFLICT.value(), UserConstants.SAME_MOBILE_PHONE);
     }
-    Optional<User> optional = MeMapper.getMapperFrom(userDto).mapTo(User.class);
-    User user = userRepostory.save(optional.get());
-    return user.getId();
-  }
-
-  /**
-   * Pasif olan bir user bilgisini aktif etmek için kullanılan metoddur.
-   *
-   * @param userId Aktif edilecek user bilgisine ait ID bilgisidir.
-   * @return Aktif edilmiş user id bilgisini döner.
-   */
-  @Override
-  public int activatedUser(int userId) {
-    UserDto userDto = getById(userId);
-    if (userDto.getId() == null) {
-      throw new UserException(0, "Herhangi bir kullanıcı bulunamadı.");
-    }
-    userDto.setActive(true);
-    return saveOrUpdate(userDto);
-  }
-
-  /**
-   * Aktif olan bir user bilgisinin pasif etmek için kullanılan metoddur.
-   *
-   * @param userId Pasif edilecek user bilgisine ait ID bilgisidir.
-   * @return Pasif edilmiş user bilgisini döner.
-   */
-  @Override
-  public int inActivatedUser(int userId) {
-    UserDto userDto = getById(userId);
-    if (userDto.getId() == null) {
-      throw new UserException(0, "Herhangi bir kullanıcı bulunamadı.");
-    }
-    userDto.setActive(false);
-    return saveOrUpdate(userDto);
   }
 
 
@@ -136,7 +149,8 @@ public class UserServiceImpl implements UserService {
    * Bu metod ile aynı kayıtlar oluşmasının kontrolünü  yapıyoruz.
    *
    * @param dto Bu objede yer alan username, mail, cep telefonu alanları dolu gelir.
-   * @return 0 Benzer kayıt yok, 1 email aynı kayıt mevcut, kullanıcı adı aynı kayıt mevcut,
+   * @return 0 Benzer kayıt yok,
+   *         1 email aynı kayıt mevcut, kullanıcı adı aynı kayıt mevcut,
    *         3 cep telefonu  aynı kayıt mevcut
    * @throws Exception iş mantığı kapsamında hataları döner.
    */
@@ -158,7 +172,13 @@ public class UserServiceImpl implements UserService {
   }
 
   private boolean mukerrerKontrolu(List<User> liste, UserDto userDto) {
-    return CollectionUtils.isEmpty(liste)
-        || liste.size() == 1 && liste.get(0).getId() == userDto.getId();
+    //güncellenen nesne için id check yapılır.
+    //yeni kayıt için veri tabanından bir kayıt varsa conflict olur.
+    if (userDto != null && userDto.getId() != null) {
+      return CollectionUtils.isEmpty(liste)
+          || liste.size() == 1 && liste.get(0).getId().equals(userDto.getId());
+    } else {
+      return CollectionUtils.isEmpty(liste);
+    }
   }
 }

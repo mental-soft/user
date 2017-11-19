@@ -4,9 +4,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.teammental.meconfig.exception.entity.EntityInsertException;
+import com.teammental.meconfig.exception.entity.EntityNotFoundException;
 import com.teammental.memapper.MeMapper;
 import com.teammental.user.dto.UserDto;
 import com.teammental.user.entity.User;
@@ -20,6 +25,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.CollectionUtils;
@@ -27,9 +34,10 @@ import org.springframework.util.CollectionUtils;
 /**
  * Created by hcguler on 10/21/2017.
  */
-@SuppressWarnings({"PMD.TooManyStaticImports", "PMD.TooManyMethods"})
 @RunWith(SpringJUnit4ClassRunner.class)
 public class UserServiceTest {
+  private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceTest.class);
+
   @MockBean
   private UserRepostory userRepostory;
 
@@ -41,6 +49,7 @@ public class UserServiceTest {
     MockitoAnnotations.initMocks(this);
   }
 
+
   /*
   * Tüm kullanıcıları getir metodunun başarılı test adımıdır.
   */
@@ -50,18 +59,23 @@ public class UserServiceTest {
     value.add(getUser(1, "asda", "asdad", "asdad", "asdad", "asdad", "asdad", true));
     when(userRepostory.findAll())
         .thenReturn(value);
-    List<UserDto> all = userService.getAll();
+    List<UserDto> all = null;
+    try {
+      all = userService.findAll();
+    } catch (EntityNotFoundException e) {
+      e.printStackTrace();
+    }
     assertTrue(!CollectionUtils.isEmpty(all));
   }
 
   /*
-  * Boş liste dönme durumu testi.
-  */
-  @Test(expected = UserException.class)
-  public void findAllUserEmptyArray() {
+   * Boş liste dönme durumu testi.
+   */
+  @Test(expected = EntityNotFoundException.class)
+  public void findAllUserEmptyArray() throws EntityNotFoundException {
     when(userRepostory.findAll())
         .thenReturn(new ArrayList<>());
-    userService.getAll();
+    userService.findAll();
   }
 
   /*
@@ -72,9 +86,11 @@ public class UserServiceTest {
     when(userRepostory.findAll())
         .thenReturn(new ArrayList<>());
     try {
-      userService.getAll();
-    } catch (UserException e) {
-      assertEquals(e.getCode(), 0);
+      userService.findAll();
+
+    } catch (EntityNotFoundException e) {
+      verify(userRepostory, times(1))
+          .findAll();
     }
   }
 
@@ -82,22 +98,22 @@ public class UserServiceTest {
   * İd ile kullanıcı çekme başarılı testi
   */
   @Test
-  public void getByIdUserTest() {
+  public void getByIdUserTest() throws EntityNotFoundException {
     User user = getUser(1, "asda", "asdad", "asdad", "asdad", "asdad", "asdad", true);
-    when(userRepostory.getOne(1))
+    when(userRepostory.findOne(1))
         .thenReturn(user);
-    UserDto userDto = userService.getById(1);
+    UserDto userDto = userService.findById(1);
     assertNotEquals(userDto, null);
   }
 
   /*
   * İd ile kullanıcı çekme başarılı testi
   */
-  @Test(expected = UserException.class)
-  public void getByIdUserNoFoundTest() {
-    when(userRepostory.getOne(1))
+  @Test(expected = EntityNotFoundException.class)
+  public void getByIdUserNoFoundTest() throws EntityNotFoundException {
+    when(userRepostory.findOne(1))
         .thenReturn(null);
-    userService.getById(1);
+    userService.findById(1);
   }
 
   /*
@@ -126,8 +142,9 @@ public class UserServiceTest {
   @Test
   public void activatedUserSuccessTest() {
     User user = getUser(6, "asda", "asdad", "asdad", "asdad", "asdad", "asdad", true);
-    doReturn(user).when(userRepostory).getOne(any());
-    doReturn(user).when(userRepostory).save(any(User.class));
+    LOGGER.info("" + user);
+    doReturn(user).when(userRepostory).findOne(1);
+    doReturn(user).when(userRepostory).saveAndFlush(any(User.class));
     int i = userService.activatedUser(1);
     assertEquals(i, 6);
   }
@@ -138,8 +155,8 @@ public class UserServiceTest {
   @Test
   public void inActivatedUserSuccessTest() {
     User user = getUser(5, "asda", "asdad", "asdad", "asdad", "asdad", "asdad", true);
-    doReturn(user).when(userRepostory).getOne(any());
-    doReturn(user).when(userRepostory).save(any(User.class));
+    doReturn(user).when(userRepostory).findOne(anyInt());
+    doReturn(user).when(userRepostory).saveAndFlush(any(User.class));
     int i = userService.inActivatedUser(1);
     assertEquals(i, 5);
   }
@@ -148,11 +165,11 @@ public class UserServiceTest {
   * İd ile kullanıcı pasif etme hatalı test
   */
   @Test
-  public void saveOrUpdateUser() {
+  public void saveOrUpdateUser() throws EntityInsertException {
     User user = getUser(5, "asda", "asdad", "asdad", "asdad", "asdad", "asdad", true);
-    doReturn(user).when(userRepostory).save(any(User.class));
+    doReturn(user).when(userRepostory).saveAndFlush(any(User.class));
     Optional optional = MeMapper.getMapperFrom(user).mapTo(UserDto.class);
-    int i = userService.saveOrUpdate((UserDto) optional.get());
+    int i = userService.insert((UserDto) optional.get());
     assertEquals(i, 5);
   }
 
@@ -160,88 +177,89 @@ public class UserServiceTest {
   * bir kullanıcı kayıt ederken aynı mailli farklı kullanıcı var olması durumu testi.
   */
   @Test(expected = UserException.class)
-  public void saveOrUpdateUserConflictMail() {
-    User user = getUser(5, "asda", "asdad", "asdad", "asdad", "asdad", "email", true);
+  public void saveOrUpdateUserConflictMail() throws EntityInsertException {
+    User user = getUser(5, "asdssa", "asdsssad", "asdad", "asdad", "asdad", "email", true);
     ArrayList<User> userArrayList = new ArrayList<>();
     userArrayList.add(getUser(2, "asda", "asdad", "asdad", "asdad", "asdad", "email", true));
     doReturn(userArrayList).when(userRepostory).findByEmail("email");
     Optional optional = MeMapper.getMapperFrom(user).mapTo(UserDto.class);
-    userService.saveOrUpdate((UserDto) optional.get());
+    userService.insert((UserDto) optional.get());
   }
 
   /*
   * bir kullanıcı kayıt ederken aynı cep telefonlu farklı kullanıcı var olması durumu testi.
   */
   @Test(expected = UserException.class)
-  public void saveOrUpdateUserConflictMobilePhone() {
+  public void saveOrUpdateUserConflictMobilePhone() throws EntityInsertException {
     User user = getUser(5, "asda", "asdad", "asdad", "asdad", "mobilePhone", "email", true);
     ArrayList<User> userArrayList = new ArrayList<>();
     userArrayList.add(getUser(2, "asda", "asdad", "asdad", "asdad", "asdad", "email", true));
     doReturn(userArrayList).when(userRepostory).findByMobilePhone("mobilePhone");
     Optional optional = MeMapper.getMapperFrom(user).mapTo(UserDto.class);
-    userService.saveOrUpdate((UserDto) optional.get());
+    userService.insert((UserDto) optional.get());
   }
 
   /*
   * bir kullanıcı kayıt ederken aynı username farklı kullanıcı var olması durumu testi.
   */
   @Test(expected = UserException.class)
-  public void saveOrUpdateUserConflictUsername() {
+  public void saveOrUpdateUserConflictUsername() throws EntityInsertException {
     User user = getUser(5, "userName", "asdad", "asdad", "asdad", "mobilePhone", "email", true);
     ArrayList<User> userArrayList = new ArrayList<>();
     userArrayList.add(getUser(2, "asda", "asdad", "asdad", "asdad", "asdad", "email", true));
     doReturn(userArrayList).when(userRepostory).findByUserName("userName");
     Optional optional = MeMapper.getMapperFrom(user).mapTo(UserDto.class);
-    userService.saveOrUpdate((UserDto) optional.get());
+    userService.insert((UserDto) optional.get());
   }
 
   /*
   * adsız kayıt atılmaya çalışılıyor
   */
   @Test(expected = UserException.class)
-  public void saveOrUpdateUserNameBos() {
+  public void saveOrUpdateUserNameBos() throws EntityInsertException {
     User user = getUser(5, "asdad", null, "asdad", "asdad", "mobilePhone", "email", true);
     Optional optional = MeMapper.getMapperFrom(user).mapTo(UserDto.class);
-    userService.saveOrUpdate((UserDto) optional.get());
+    userService.insert((UserDto) optional.get());
   }
 
   /*
   * soyadsız kayıt atılmaya çalışılıyor
   */
   @Test(expected = UserException.class)
-  public void saveOrUpdateUserSurNameBos() {
+  public void saveOrUpdateUserSurNameBos() throws EntityInsertException {
     User user = getUser(5, "asdad", "asdasd", null, "asdad", "mobilePhone", "email", true);
     Optional optional = MeMapper.getMapperFrom(user).mapTo(UserDto.class);
-    userService.saveOrUpdate((UserDto) optional.get());
+    userService.insert((UserDto) optional.get());
   }
 
   /*
   * cep telefonsuz kayıt atılmaya çalışılıyor
   */
   @Test(expected = UserException.class)
-  public void saveOrUpdateUserMobilePhoneBos() {
+  public void saveOrUpdateUserMobilePhoneBos() throws EntityInsertException {
     User user = getUser(5, "asdad", "asdasd", "asdad", "asdad", null, "email", true);
     Optional optional = MeMapper.getMapperFrom(user).mapTo(UserDto.class);
-    userService.saveOrUpdate((UserDto) optional.get());
+    userService.insert((UserDto) optional.get());
   }
 
   /*
   * cep telefonsuz kayıt atılmaya çalışılıyor
   */
   @Test(expected = UserException.class)
-  public void saveOrUpdateUserMailBos() {
+  public void saveOrUpdateUserMailBos() throws EntityInsertException {
     User user = getUser(5, "asdad", "asdasd", "asdad", "asdad", "asda", null, true);
     Optional optional = MeMapper.getMapperFrom(user).mapTo(UserDto.class);
-    userService.saveOrUpdate((UserDto) optional.get());
+    userService.insert((UserDto) optional.get());
   }
+
   /*
   * cep telefonsuz kayıt atılmaya çalışılıyor
   */
   @Test(expected = UserException.class)
-  public void saveOrUpdateUserUserNameBos() {
+  public void saveOrUpdateUserUserNameBos() throws EntityInsertException {
     User user = getUser(5, null, "asdasd", "asdad", "asdad", "asda", "asda", true);
     Optional optional = MeMapper.getMapperFrom(user).mapTo(UserDto.class);
-    userService.saveOrUpdate((UserDto) optional.get());
+    userService.insert((UserDto) optional.get());
   }
 
   /**

@@ -20,7 +20,7 @@ public class User {
   @SequenceGenerator(name = "pk_sequence", sequenceName = "user_id_seq", allocationSize = 1)
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pk_sequence")
   @Column(name = "ID", columnDefinition = "NUMERIC", unique = true, nullable = false)
-  private int id;
+  private Integer id;
 
   @Size(max = 50)
   @Column(name = "USER_NAME", columnDefinition = "VARCHAR")
@@ -49,11 +49,11 @@ public class User {
   @Column(name = "IS_ACTIVE", columnDefinition = "BOOLEAN")
   private boolean active;
 
-  public int getId() {
+  public Integer getId() {
     return id;
   }
 
-  public void setId(int id) {
+  public void setId(Integer id) {
     this.id = id;
   }
 

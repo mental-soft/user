@@ -5,6 +5,7 @@ package com.teammental.user.constants;
  * Created by hcguler on 9/2/2017.
  */
 public class UserConstants {
+  public static final String BASE_URL = "/user";
   public static final String NOT_FOUND = "Herhangi bir kullanıcı bulunamadı.";
   public static final String NAME_SURNAME_REQUIRED = "Ad Soyad alanı doldurulması zorunludur.";
   public static final String USERNAME_REQUIRED = "Kullanıcı adı alanı doldurulması zorunludur.";

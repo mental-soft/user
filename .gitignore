@@ -3,3 +3,7 @@
 *.iml
 build/
 /config/
+
+out/
+*.ipr
+*.iws
