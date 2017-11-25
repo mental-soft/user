@@ -60,13 +60,14 @@ public class UserServiceImpl
       UserDto userDto = null;
       userDto = findById(userId);
       userDto.setActive(true);
-      return insert(userDto);
+      UserDto update = update(userDto);
+      return update.getId();
     } catch (EntityNotFoundException e) {
       LOGGER.error("Kayıt Bulunamadı.");
       throw new UserException(0, UserConstants.NOT_FOUND);
-    } catch (EntityInsertException e) {
-      LOGGER.error("Kayıt Bulunamadı.");
-      throw new UserException(0, "Kayıt işlenirken hata oluştu.");
+    }  catch (EntityUpdateException e) {
+      LOGGER.error("Kayıt Güncellenirken hata oluştu.");
+      throw new UserException(0, "Kayıt Güncellenirken hata oluştu.");
     }
   }
 
@@ -82,13 +83,14 @@ public class UserServiceImpl
       UserDto userDto = null;
       userDto = findById(userId);
       userDto.setActive(false);
-      return insert(userDto);
+      UserDto update = update(userDto);
+      return update.getId();
     } catch (EntityNotFoundException e) {
       LOGGER.error("Kayıt Bulunamadı.");
       throw new UserException(0, UserConstants.NOT_FOUND);
-    } catch (EntityInsertException e) {
-      LOGGER.error("Kayıt Bulunamadı.");
-      throw new UserException(0, "Kayıt işlenirken hata oluştu.");
+    } catch (EntityUpdateException e) {
+      LOGGER.error("Kayıt Güncellenirken hata oluştu.");
+      throw new UserException(0, "Kayıt Güncellenirken hata oluştu.");
     }
   }
 
