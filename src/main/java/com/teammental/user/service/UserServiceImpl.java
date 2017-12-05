@@ -65,7 +65,7 @@ public class UserServiceImpl
     } catch (EntityNotFoundException e) {
       LOGGER.error("Kayıt Bulunamadı.");
       throw new UserException(0, UserConstants.NOT_FOUND);
-    }  catch (EntityUpdateException e) {
+    } catch (EntityUpdateException e) {
       LOGGER.error("Kayıt Güncellenirken hata oluştu.");
       throw new UserException(0, "Kayıt Güncellenirken hata oluştu.");
     }
@@ -92,6 +92,29 @@ public class UserServiceImpl
       LOGGER.error("Kayıt Güncellenirken hata oluştu.");
       throw new UserException(0, "Kayıt Güncellenirken hata oluştu.");
     }
+  }
+
+  /**
+   * Kullanıcıya ait email ve telefon numarası ile id bilgisini geri dönen metoddur.
+   *
+   * @param info email, telefon veya username
+   * @return userId bilgisi döner.
+   */
+  @Override
+  public Integer getUserId(String info) throws EntityNotFoundException {
+    List<User> byUserName = userRepostory.findByUserName(info);
+    List<User> byEmail = userRepostory.findByEmail(info);
+    List<User> byMobilePhone = userRepostory.findByMobilePhone(info);
+    if (!CollectionUtils.isEmpty(byUserName)) {
+      return byUserName.get(0).getId();
+    }
+    if (!CollectionUtils.isEmpty(byEmail)) {
+      return byEmail.get(0).getId();
+    }
+    if (!CollectionUtils.isEmpty(byMobilePhone)) {
+      return byMobilePhone.get(0).getId();
+    }
+    throw new EntityNotFoundException("Kullanıcı bilgisi bulunamadı.");
   }
 
   /**

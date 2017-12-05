@@ -1,8 +1,5 @@
 package com.teammental.user.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doReturn;
@@ -20,6 +17,7 @@ import com.teammental.user.jpa.UserRepostory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -66,7 +64,7 @@ public class UserServiceTest {
     } catch (EntityNotFoundException e) {
       e.printStackTrace();
     }
-    assertTrue(!CollectionUtils.isEmpty(all));
+    Assert.assertTrue(!CollectionUtils.isEmpty(all));
   }
 
   /*
@@ -104,7 +102,7 @@ public class UserServiceTest {
     when(userRepostory.findOne(1))
         .thenReturn(user);
     UserDto userDto = userService.findById(1);
-    assertNotEquals(userDto, null);
+    Assert.assertNotEquals(userDto, null);
   }
 
   /*
@@ -148,7 +146,7 @@ public class UserServiceTest {
     doReturn(user).when(userRepostory).findOne(1);
     doReturn(user).when(userRepostory).saveAndFlush(any(User.class));
     int i = userService.activatedUser(1);
-    assertEquals(i, 6);
+    Assert.assertEquals(i, 6);
   }
 
   /*
@@ -161,7 +159,7 @@ public class UserServiceTest {
     doReturn(user).when(userRepostory).findOne(anyInt());
     doReturn(user).when(userRepostory).saveAndFlush(any(User.class));
     int i = userService.inActivatedUser(1);
-    assertEquals(i, 5);
+    Assert.assertEquals(i, 5);
   }
 
   /*
@@ -174,7 +172,7 @@ public class UserServiceTest {
     doReturn(user).when(userRepostory).saveAndFlush(any(User.class));
     Optional optional = MeMapper.getMapperFrom(user).mapTo(UserDto.class);
     int i = userService.insert((UserDto) optional.get());
-    assertEquals(i, 5);
+    Assert.assertEquals(i, 5);
   }
 
   /*
@@ -264,6 +262,48 @@ public class UserServiceTest {
     User user = getUser(5, null, "asdasd", "asdad", "asdad", "asda", "asda", true);
     Optional optional = MeMapper.getMapperFrom(user).mapTo(UserDto.class);
     userService.insert((UserDto) optional.get());
+  }
+
+  /*
+  * UserName ile kullanici Id getirme
+  */
+  @Test
+  public void getUserIdUserNameTest() throws EntityNotFoundException {
+    User user = getUser(6, "asda", "asdad", "asdad", "asdad", "asdad", "asdad", true);
+    List<User> users = new ArrayList<>();
+    users.add(user);
+    doReturn(users).when(userRepostory).findByUserName("asda");
+    doReturn(user).when(userRepostory).saveAndFlush(any(User.class));
+    Integer i = userService.getUserId("asda");
+    Assert.assertEquals((int) i, 6);
+  }
+
+  /*
+  * UserName ile kullanici Id getirme
+  */
+  @Test
+  public void getUserIdEmailTest() throws EntityNotFoundException {
+    User user = getUser(6, "asda", "asdad", "asdad", "asdad", "asdad", "asdad", true);
+    List<User> users = new ArrayList<>();
+    users.add(user);
+    doReturn(users).when(userRepostory).findByEmail("asda");
+    doReturn(user).when(userRepostory).saveAndFlush(any(User.class));
+    Integer i = userService.getUserId("asda");
+    Assert.assertEquals((int) i, 6);
+  }
+
+  /*
+  * UserName ile kullanici Id getirme
+  */
+  @Test
+  public void getUserIdMobilePhoneTest() throws EntityNotFoundException {
+    User user = getUser(6, "asda", "asdad", "asdad", "asdad", "asdad", "asdad", true);
+    List<User> users = new ArrayList<>();
+    users.add(user);
+    doReturn(users).when(userRepostory).findByMobilePhone("asda");
+    doReturn(user).when(userRepostory).saveAndFlush(any(User.class));
+    Integer i = userService.getUserId("asda");
+    Assert.assertEquals((int) i, 6);
   }
 
   /**

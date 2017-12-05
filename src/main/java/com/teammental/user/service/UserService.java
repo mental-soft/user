@@ -1,6 +1,7 @@
 package com.teammental.user.service;
 
 import com.teammental.meconfig.bll.service.BaseCrudService;
+import com.teammental.meconfig.exception.entity.EntityNotFoundException;
 import com.teammental.user.dto.UserDto;
 
 /**
@@ -12,4 +13,6 @@ public interface UserService extends BaseCrudService<UserDto, Integer> {
   int activatedUser(Integer userId);
 
   int inActivatedUser(Integer userId);
+
+  Integer getUserId(String info) throws EntityNotFoundException;
 }
