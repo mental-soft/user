@@ -273,7 +273,8 @@ public class UserServiceTest {
     List<User> users = new ArrayList<>();
     users.add(user);
     doReturn(users).when(userRepostory).findByUserName("asda");
-    doReturn(user).when(userRepostory).saveAndFlush(any(User.class));
+    doReturn(null).when(userRepostory).findByMobilePhone("asda");
+    doReturn(null).when(userRepostory).findByEmail("asda");
     Integer i = userService.getUserId("asda");
     Assert.assertEquals((int) i, 6);
   }
@@ -287,7 +288,8 @@ public class UserServiceTest {
     List<User> users = new ArrayList<>();
     users.add(user);
     doReturn(users).when(userRepostory).findByEmail("asda");
-    doReturn(user).when(userRepostory).saveAndFlush(any(User.class));
+    doReturn(null).when(userRepostory).findByMobilePhone("asda");
+    doReturn(null).when(userRepostory).findByUserName("asda");
     Integer i = userService.getUserId("asda");
     Assert.assertEquals((int) i, 6);
   }
@@ -301,9 +303,23 @@ public class UserServiceTest {
     List<User> users = new ArrayList<>();
     users.add(user);
     doReturn(users).when(userRepostory).findByMobilePhone("asda");
-    doReturn(user).when(userRepostory).saveAndFlush(any(User.class));
+    doReturn(null).when(userRepostory).findByEmail("asda");
+    doReturn(null).when(userRepostory).findByUserName("asda");
     Integer i = userService.getUserId("asda");
     Assert.assertEquals((int) i, 6);
+  }
+  /*
+  * kullanıcı bulunamadı hatası
+  */
+  @Test(expected = EntityNotFoundException.class)
+  public void getUserIdNotFound() throws EntityNotFoundException {
+    User user = getUser(6, "asda", "asdad", "asdad", "asdad", "asdad", "asdad", true);
+    List<User> users = new ArrayList<>();
+    users.add(user);
+    doReturn(null).when(userRepostory).findByMobilePhone("asda");
+    doReturn(null).when(userRepostory).findByEmail("asda");
+    doReturn(null).when(userRepostory).findByUserName("asda");
+    Integer i = userService.getUserId("asda");
   }
 
   /**
